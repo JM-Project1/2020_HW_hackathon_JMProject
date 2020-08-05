@@ -1,5 +1,4 @@
 # Overview
-
 - https://www.topmaker.kr/tag/1st_Week_Day_1
 - https://storycompiler.tistory.com/275
 
@@ -20,6 +19,12 @@
 - 사운드센서 | http://mechasolution.com/shop/goods/goods_view.php?goodsno=1424
 - ADC MCP3008 | http://mechasolution.com/shop/goods/goods_view.php?goodsno=8067
 
+# 개발 지원
+- https://www.topmaker.kr/358
+
 # Tutorial
 - https://tizenschool.org/tutorial/150
 - https://tizenschool.org/tutorial/194
+
+# Mission
+> Xaml Project 생성하여 `Hello <ProjectName>` 출력 후 screenshot github 에 올린 후 링크 slack 에 공유
