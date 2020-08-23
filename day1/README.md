@@ -23,8 +23,14 @@
 - https://www.topmaker.kr/358
 
 # Tutorial
-- https://tizenschool.org/tutorial/150
-- https://tizenschool.org/tutorial/194
+## 해커톤 소개
+ - 강의 자료 : https://storycompiler.tistory.com/275
+ - 강의 영상 : https://www.youtube.com/watch?v=AobfrqCJiS0
+ 
+## Tizen 소개 및 개발 환경 구축
+- Tizen introduction : http://tizenschool.org/tutorial/150
+- Tizen C# 개발 환경 구축 : http://tizenschool.org/tutorial/194
+- 강의 영상 : https://www.youtube.com/watch?v=AobfrqCJiS0
 
 # Mission
 > Xaml Project 생성하여 `Hello <ProjectName>` 출력 후 screenshot github 에 올린 후 링크 slack 에 공유
