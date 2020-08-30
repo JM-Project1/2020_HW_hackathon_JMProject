@@ -6,3 +6,6 @@
 
 ## git repo
 - https://git.tizen.org/cgit/apps/native/smart-surveillance-camera/
+
+## References
+- https://iotjs.net
