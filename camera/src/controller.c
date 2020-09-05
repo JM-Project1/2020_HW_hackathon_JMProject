@@ -18,6 +18,10 @@
 #include <Ecore.h>
 #include <tizen.h>
 #include <service_app.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+
 #include <camera.h>
 #include <pthread.h>
 #include "controller.h"
@@ -25,12 +29,23 @@
 #include "controller_telegram.h"
 #include "log.h"
 #include "resource_camera.h"
+#include "resource/resource_infrared_motion.h"
+#include "resource/resource_led.h"
+
+
 
 #define THRESHOLD_VALID_EVENT_COUNT 5
 #define VALID_EVENT_INTERVAL_MS 200
 #define TELEGRAM_EVENT_INTERVAL_MS 5000
 
 #define IMAGE_FILE_PREFIX "CAM_"
+
+////////// motion
+#define SENSOR_MOTION_GPIO_NUMBER (18)
+
+// LED sensor information
+#define SENSOR_LED_GPIO_NUMBER (24)
+
 
 //#define TEMP_IMAGE_FILENAME "/opt/usr/home/owner/apps_rw/org.tizen.smart-surveillance-camera/shared/data/tmp.jpg"
 //#define LATEST_IMAGE_FILENAME "/opt/usr/home/owner/apps_rw/org.tizen.smart-surveillance-camera/shared/data/latest.jpg"
@@ -69,6 +84,49 @@ static long long int __get_monotonic_ms(void)
 
 	return ret_time;
 }
+//path /opt/usr/home/owner/apps_rw/{package_id/data
+static int __image_data_to_file(const char *filename, const void *image_data, unsigned int size)
+{
+	FILE *fp = NULL;
+	char *data_path = NULL;
+	char file[PATH_MAX]= {0,};
+
+	data_path = app_get_data_path();
+
+	snprintf(file, PATH_MAX, "%s_JMproject_%s.jpg",data_path,filename);
+	free(data_path);
+	data_path=NULL;
+
+	_D("File : %s",file);
+
+	fp= fopen(file, "w");
+	if(!fp){
+		_E("Failed to open file : %s",file);
+		return -1;
+	}
+	if (fwrite(image_data, size, 1, fp) != 1){
+		_E("failed to write image to file :%s",file);
+		fclose(fp);
+		return -1;
+	}
+	fclose(fp);
+	return 0;
+}
+
+
+
+
+static void __resource_camera_capture_completed_cb(const void *image, unsigned int size, void *user_data)
+{
+	char filename[PATH_MAX] = {0,};
+	snprintf(filename, PATH_MAX, "%s%lld",IMAGE_FILE_PREFIX,__get_monotonic_ms());
+
+	__image_data_to_file(filename,image,size);
+
+}
+
+
+
 
 static void __terminate_telegram_thread(void *data)
 {
@@ -236,8 +294,10 @@ static void __preview_image_buffer_created_cb(void *data)
 	return;
 }
 
+static int cameraState = 0;
 static void _start_camera(void)
 {
+	cameraState = 1;
 	if (resource_camera_start_preview() == -1) {
 		_E("Failed to start camera preview");
 	}
@@ -245,10 +305,44 @@ static void _start_camera(void)
 
 static void _stop_camera(void)
 {
+	cameraState = 0;
 	if (resource_camera_stop_preview() == -1) {
 		_E("Failed to stop camera preview");
 	}
 }
+
+////////////motion sensor
+static int _change_led_state(int state) {
+	int ret = 0;
+
+	// Write state to LED light
+	ret = resource_write_led(SENSOR_LED_GPIO_NUMBER, state);
+	if (ret != 0) {
+		_E("cannot write led data");
+		return -1;
+	}
+
+	_I("LED State : %s", state ? "ON":"OFF");
+
+	return 0;
+}
+
+static void motion_interrupted_cb(uint32_t motion_value, void *user_data)
+{
+	_I("Detected motion value : %u", motion_value);
+
+	// Set LED light with value
+	_change_led_state(motion_value);
+	/// camera capture
+	resource_camera_capture(__resource_camera_capture_completed_cb, NULL);
+	///
+	return;
+}
+
+
+
+
+
 
 static bool service_app_create(void *data)
 {
@@ -327,6 +421,7 @@ static void service_app_terminate(void *data)
 	ad->latest_image_filename = NULL;
 	pthread_mutex_unlock(&ad->mutex);
 	free(buffer);
+
 	free(encoded_image_buffer);
 	free(info);
 	g_free(temp_image_filename);
@@ -335,6 +430,18 @@ static void service_app_terminate(void *data)
 	pthread_mutex_destroy(&ad->mutex);
 	free(ad);
 	_D("App Terminated - leave");
+
+	/////motion terminate
+	resource_unset_interrupted_cb_infrared_motion(SENSOR_MOTION_GPIO_NUMBER);
+
+		// Turn off LED light with __set_led()
+	_change_led_state(0);
+
+		// Close Motion and LED resources
+	resource_close_infrared_motion();
+	resource_close_led();
+
+	//FN_END;
 }
 
 static void service_app_control(app_control_h app_control, void *data)
@@ -346,18 +453,35 @@ static void service_app_control(app_control_h app_control, void *data)
 	ret = app_control_get_extra_data(app_control, "command", &command);
 	if (ret != APP_CONTROL_ERROR_NONE) {
 		_D("Failed to app_control_get_extra_data() From command key [0x%x]", ret);
-	} else {
-		_D("command = [%s]", command);
-		if (!strncmp("send", command, sizeof("send"))) {
-			__send_telegram_message("TEST MESSAGE", data);
-		} else if (!strncmp("on", command, sizeof("on"))) {
-			_start_camera();
-		} else if (!strncmp("off", command, sizeof("off"))) {
-			_stop_camera();
-		}
-		free(command);
+		return;
 	}
+	ret = resource_set_interrupted_cb_infrared_motion(SENSOR_MOTION_GPIO_NUMBER, motion_interrupted_cb, NULL);
+		if (ret != 0) {
+			_E("cannot set interrupted callback for motion sensor");
+			return;
+		}
+
+
+	_D("command = [%s]", command);
+	if (!strncmp("send", command, sizeof("send"))) {
+		__send_telegram_message("TEST MESSAGE", data);
+	} else if (!strncmp("on", command, sizeof("on"))) {
+		_start_camera();
+	} else if (!strncmp("off", command, sizeof("off"))) {
+		_stop_camera();
+	} else if (!strncmp("picture", command, sizeof("picture"))) {
+		resource_camera_capture(__resource_camera_capture_completed_cb, NULL);
+	} else if (!strncmp("state", command, sizeof("on"))) {
+		if (cameraState == 1) {
+			__send_telegram_message("Camera ON", data);
+		} else {
+			__send_telegram_message("Camera Off", data);
+		}
+	}
+	free(command);
 }
+
+
 
 int main(int argc, char* argv[])
 {
