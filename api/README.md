@@ -7,7 +7,3 @@
 ```
 * public/images 폴더 생성
 * `node src/app.js` 로 서버 실행
-
-## 코드 기여자
-
-* 전체, 석종일

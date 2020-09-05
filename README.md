@@ -24,11 +24,11 @@ JMProject
 ## 파일 리스트 
 
 * dashboard/res/server.js
-* api/**/*
+* api/src/app.js
 
 ## 코드 기여자 
 
-* api 전체, 종일
+* api/src/app.js, 종일
 * dashboard/res/server.js, #L68-L72 latest 추가, 종일
 
 ## 보드 
