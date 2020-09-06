@@ -7,8 +7,8 @@ JMProject
 ### 팀원
 
 * 팀원이 맡은 역할을 자유롭게 적어주세요(기획/디자인/설계/개발/디버깅/기술조언/환경설정/발표 등)
-* 김명규, @MyeongQkim - H/W Developer
-* 석종일, @daclouds - S/W Developer
+* 김명규, @MyeongQkim - H/W Developer, 기획, 발표, 디자인
+* 석종일, @daclouds - S/W Developer, 개발, 디버깅, 기술조언, 설계
 
 ## 프로젝트 제목 
 
@@ -22,12 +22,12 @@ JMProject
 ```
 
 ## 파일 리스트 
-
+* camera/src/controller.c
 * dashboard/res/server.js
 * api/src/app.js
 
 ## 코드 기여자 
-
+* camera/src/controller.c, peripheral gpio 를 활용하여 motion 센서 추가 , 명규
 * api/src/app.js, 종일
 * dashboard/res/server.js, #L68-L72 latest 추가, 종일
 
