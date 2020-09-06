@@ -74,3 +74,6 @@ JMProject
 * `curl` 로 API 서버에 `/send` 요청을 보내고 카메라를 끕니다.
 * 요청을 받은 API 서버는 dashboard 를 통해 마지막으로 저장된 이미지를 받아 오고
 * KAKAO API 를 통해 PUSH 알림을 보냅니다.
+
+## 예상 결과물
+![Uploading KakaoTalk_20200906_105836485.jpg…]()
