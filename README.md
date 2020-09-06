@@ -24,12 +24,16 @@ JMProject
 ## 파일 리스트 
 
 * dashboard/res/server.js
+* camera/inc/controller_send.h
+* camera/src/controller_send.c
 * api/src/app.js
 
 ## 코드 기여자 
 
 * api/src/app.js, 종일
 * dashboard/res/server.js, #L68-L72 latest 추가, 종일
+* camera/inc/controller_send.h, 종일
+* camera/src/controller_send.c, 종일
 
 ## 보드 
 

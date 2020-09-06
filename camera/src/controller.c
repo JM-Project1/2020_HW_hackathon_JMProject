@@ -335,6 +335,7 @@ static void motion_interrupted_cb(uint32_t motion_value, void *user_data)
 	_change_led_state(motion_value);
 	/// camera capture
 	resource_camera_capture(__resource_camera_capture_completed_cb, NULL);
+	controller_send_message();
 	///
 	return;
 }
