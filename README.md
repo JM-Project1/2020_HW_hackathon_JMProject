@@ -78,3 +78,4 @@ JMProject
 ## 최종 예상 결과물
 ![KakaoTalk_20200906_105836485](https://user-images.githubusercontent.com/33387406/92316937-b8a55f80-f035-11ea-89f9-c17bb2518fdd.jpg)
 
+![KakaoTalk_20200906_110445035](https://user-images.githubusercontent.com/33387406/92316946-d83c8800-f035-11ea-93be-9f5d4f186220.jpg)
