@@ -75,5 +75,6 @@ JMProject
 * 요청을 받은 API 서버는 dashboard 를 통해 마지막으로 저장된 이미지를 받아 오고
 * KAKAO API 를 통해 PUSH 알림을 보냅니다.
 
-## 예상 결과물
-![Uploading KakaoTalk_20200906_105836485.jpg…]()
+## 최종 예상 결과물
+![KakaoTalk_20200906_105836485](https://user-images.githubusercontent.com/33387406/92316937-b8a55f80-f035-11ea-89f9-c17bb2518fdd.jpg)
+
