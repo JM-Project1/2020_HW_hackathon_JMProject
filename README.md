@@ -22,14 +22,14 @@ JMProject
 ```
 
 ## 파일 리스트 
-
+* camera/src/controller.c
 * dashboard/res/server.js
 * camera/inc/controller_send.h
 * camera/src/controller_send.c
 * api/src/app.js
 
 ## 코드 기여자 
-
+* camera/src/controller.c - peripheral gpio motion sensor 추가, 명규
 * api/src/app.js, 종일
 * dashboard/res/server.js, #L68-L72 latest 추가, 종일
 * camera/inc/controller_send.h, 종일
